@@ -270,12 +270,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   </div>
   <div class="sync-section">
     <h3>数据同步</h3>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <span style="font-size:14px">自动同步</span>
+      <label style="position:relative;width:48px;height:26px;display:inline-block;cursor:pointer">
+        <input type="checkbox" id="autoSyncSwitch" onchange="toggleAutoSync()" style="opacity:0;width:0;height:0">
+        <span style="position:absolute;top:0;left:0;right:0;bottom:0;background:var(--surface2);border-radius:13px;transition:.3s"></span>
+        <span id="autoSyncDot" style="position:absolute;top:3px;left:3px;width:20px;height:20px;background:var(--text2);border-radius:10px;transition:.3s"></span>
+      </label>
+    </div>
     <div class="sync-status idle" id="syncStatus">未配置同步</div>
     <div class="sync-btns">
       <button class="sync-btn upload" onclick="syncUpload()">⬆ 上传</button>
       <button class="sync-btn download" onclick="syncDownload()">⬇ 下载</button>
     </div>
-    <div class="form-hint" style="margin-top:12px">上传：将本地数据加密后保存到 GitHub Gist<br>下载：从 Gist 拉取加密数据并解密到本地<br>数据使用 AES 加密，密钥为你的4位主密码</div>
+    <div class="form-hint" style="margin-top:12px">自动同步：数据变更后3秒自动上传云端，解锁时自动下载最新数据<br>手动上传/下载：随时手动触发一次完整同步</div>
   </div>
 </div>
 
@@ -295,14 +303,24 @@ function getData() {
   try { return JSON.parse(localStorage.getItem('pwvault_data') || '{"items":[],"groups":[]}'); }
   catch(e) { return {items:[],groups:[]}; }
 }
-function setData(d) { localStorage.setItem('pwvault_data', JSON.stringify(d)); }
+function setData(d) { localStorage.setItem('pwvault_data', JSON.stringify(d)); autoSyncUpload(); }
 
 function getSyncConfig() {
-  return { token: localStorage.getItem('pwvault_sync_token') || '', gistId: localStorage.getItem('pwvault_sync_gist') || '' };
+  return { token: localStorage.getItem('pwvault_sync_token') || '', gistId: localStorage.getItem('pwvault_sync_gist') || '', autoSync: localStorage.getItem('pwvault_sync_auto') === 'true' };
 }
 function setSyncConfig(token, gistId) {
   localStorage.setItem('pwvault_sync_token', token);
   localStorage.setItem('pwvault_sync_gist', gistId);
+}
+function isAutoSyncEnabled() {
+  const cfg = getSyncConfig();
+  return cfg.autoSync && cfg.token;
+}
+let syncUploadTimer = null;
+function autoSyncUpload() {
+  if(!isAutoSyncEnabled()) return;
+  if(syncUploadTimer) clearTimeout(syncUploadTimer);
+  syncUploadTimer = setTimeout(() => { doSyncUpload(true); }, 3000);
 }
 
 function aesEncrypt(text, key) {
@@ -345,7 +363,7 @@ function pinInput(n) {
   updatePinDots();
   if(pin.length === 4) {
     setTimeout(() => {
-      if(pin === MASTER_PIN) { unlocked = true; pin = ''; updatePinDots(); showView('mainView'); }
+      if(pin === MASTER_PIN) { unlocked = true; pin = ''; updatePinDots(); doSyncDownload(true); showView('mainView'); }
       else { document.getElementById('pinError').classList.add('show'); pin = ''; updatePinDots(); setTimeout(() => document.getElementById('pinError').classList.remove('show'), 1500); }
     }, 150);
   }
@@ -569,11 +587,13 @@ function deleteGroup(name) {
 function renderSyncView() {
   const cfg = getSyncConfig();
   document.getElementById('syncToken').value = cfg.token || '';
+  document.getElementById('autoSyncSwitch').checked = cfg.autoSync;
+  updateToggleVisual(cfg.autoSync);
   const st = document.getElementById('syncStatus');
   if(!cfg.token) {
     st.className = 'sync-status idle'; st.textContent = '未配置 Token';
   } else if(cfg.gistId) {
-    st.className = 'sync-status ok'; st.textContent = '已配置 · Gist ID: ' + cfg.gistId.substring(0,8) + '...';
+    st.className = 'sync-status ok'; st.textContent = cfg.autoSync ? '自动同步已开启 · Gist: ' + cfg.gistId.substring(0,8) + '...' : '已配置 · Gist ID: ' + cfg.gistId.substring(0,8) + '...';
   } else {
     st.className = 'sync-status idle'; st.textContent = 'Token 已配置 · 未创建 Gist';
   }
@@ -581,8 +601,24 @@ function renderSyncView() {
 function updateSyncIndicator() {
   const cfg = getSyncConfig();
   const ind = document.getElementById('syncInd');
-  if(cfg.token) ind.classList.add('synced');
-  else ind.classList.remove('synced');
+  if(cfg.token && cfg.autoSync) { ind.classList.add('synced'); ind.textContent = '✅'; }
+  else if(cfg.token) { ind.classList.add('synced'); ind.textContent = '☁️'; }
+  else { ind.classList.remove('synced'); ind.textContent = '☁️'; }
+}
+function toggleAutoSync() {
+  const checked = document.getElementById('autoSyncSwitch').checked;
+  localStorage.setItem('pwvault_sync_auto', checked);
+  updateToggleVisual(checked);
+  renderSyncView();
+  updateSyncIndicator();
+  if(checked) showToast('自动同步已开启', 'success');
+  else showToast('自动同步已关闭');
+}
+function updateToggleVisual(on) {
+  const dot = document.getElementById('autoSyncDot');
+  const track = dot.previousElementSibling;
+  if(on) { dot.style.left = '25px'; dot.style.background = 'var(--success)'; track.style.background = 'var(--accent)'; }
+  else { dot.style.left = '3px'; dot.style.background = 'var(--text2)'; track.style.background = 'var(--surface2)'; }
 }
 
 function saveSyncConfig() {
@@ -594,9 +630,9 @@ function saveSyncConfig() {
   showToast('配置已保存', 'success');
 }
 
-async function syncUpload() {
+async function doSyncUpload(silent) {
   const cfg = getSyncConfig();
-  if(!cfg.token) { showToast('请先配置 Token'); showView('syncView'); return; }
+  if(!cfg.token) { if(!silent) { showToast('请先配置 Token'); showView('syncView'); } return; }
   const data = getData();
   const plaintext = JSON.stringify(data);
   const encrypted = aesEncrypt(plaintext, MASTER_PIN);
@@ -633,16 +669,17 @@ async function syncUpload() {
     }
     renderSyncView();
     updateSyncIndicator();
-    showToast('上传成功', 'success');
+    if(!silent) showToast('上传成功', 'success');
+    else updateSyncBadge('✓');
   } catch(e) {
-    showToast('上传失败: ' + e.message);
+    if(!silent) showToast('上传失败: ' + e.message);
+    else updateSyncBadge('!');
   }
 }
 
-async function syncDownload() {
+async function doSyncDownload(silent) {
   const cfg = getSyncConfig();
-  if(!cfg.token) { showToast('请先配置 Token'); showView('syncView'); return; }
-  if(!cfg.gistId) { showToast('请先上传一次以创建 Gist'); return; }
+  if(!cfg.token || !cfg.gistId) { if(!silent && cfg.token) showToast('请先上传一次以创建 Gist'); return; }
 
   try {
     const res = await fetch('https://api.github.com/gists/' + cfg.gistId, {
@@ -651,28 +688,37 @@ async function syncDownload() {
     if(!res.ok) throw new Error('HTTP ' + res.status);
     const gist = await res.json();
     const file = gist.files[GIST_FILENAME];
-    if(!file || !file.content) throw new Error('Gist 中没有数据');
+    if(!file || !file.content) return;
 
     const decrypted = aesDecrypt(file.content, MASTER_PIN);
-    if(!decrypted) throw new Error('解密失败，主密码不匹配');
+    if(!decrypted) return;
     const data = JSON.parse(decrypted);
-
     const localData = getData();
-    if(data.items.length > localData.items.length) {
-      setData(data);
-      showToast('下载成功 · 已更新 ' + data.items.length + ' 条记录', 'success');
-    } else {
+    if(data.items.length >= localData.items.length) {
+      localStorage.setItem('pwvault_data', JSON.stringify(data));
+      if(silent && data.items.length > localData.items.length) showToast('已从云端同步 ' + data.items.length + ' 条记录', 'success');
+      else if(!silent) showToast('下载成功 · 已更新 ' + data.items.length + ' 条记录', 'success');
+    } else if(!silent) {
       openModal('数据冲突', `云端有 ${data.items.length} 条，本地有 ${localData.items.length} 条。要用云端数据覆盖本地吗？`, () => {
         setData(data);
         showToast('已用云端数据覆盖本地', 'success');
         showView('mainView');
       });
-      return;
     }
   } catch(e) {
-    showToast('下载失败: ' + e.message);
+    if(!silent) showToast('下载失败: ' + e.message);
   }
 }
+
+function updateSyncBadge(status) {
+  const ind = document.getElementById('syncInd');
+  if(!ind) return;
+  ind.textContent = status === '✓' ? '✅' : status === '!' ? '⚠️' : '☁️';
+  setTimeout(() => { ind.textContent = '☁️'; }, 3000);
+}
+
+function syncUpload() { doSyncUpload(false); }
+function syncDownload() { doSyncDownload(false); }
 
 document.addEventListener('DOMContentLoaded', () => { showView('lockView'); });
 </script>
