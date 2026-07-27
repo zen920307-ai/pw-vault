@@ -250,7 +250,8 @@ let editingId = null;
 let currentDetailId = null;
 let currentDetailItem = null;
 let modalCallback = null;
-let gistId = localStorage.getItem('pwvault_gist') || '';
+const GIST_ID = 'aafd7cde4244c9572b200701d971a155';
+let gistId = GIST_ID;
 let syncTimer = null;
 let isSyncing = false;
 
@@ -360,7 +361,6 @@ async function cloudUpload() {
     }
     if(!res.ok) { const err = await res.json(); throw new Error(err.message || 'HTTP ' + res.status); }
     const gist = await res.json();
-    if(!gistId) { gistId = gist.id; localStorage.setItem('pwvault_gist', gistId); }
     updateSyncUI('done');
     setTimeout(() => updateSyncUI('idle'), 3000);
   } catch(e) {
