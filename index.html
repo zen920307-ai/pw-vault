@@ -260,6 +260,7 @@ function getData() {
   catch(e) { return {items:[],groups:[]}; }
 }
 function setData(d) {
+  d.lastUpdated = Date.now();
   localStorage.setItem('pwvault_data', JSON.stringify(d));
   scheduleAutoUpload();
 }
@@ -385,10 +386,14 @@ async function cloudDownload() {
     if(!decrypted) return;
     const cloudData = JSON.parse(decrypted);
     const localData = getData();
+    const cloudTime = cloudData.lastUpdated || 0;
+    const localTime = localData.lastUpdated || 0;
 
-    if(cloudData.items.length > localData.items.length) {
+    if(cloudTime > localTime) {
       localStorage.setItem('pwvault_data', JSON.stringify(cloudData));
       showToast('已从云端同步 ' + cloudData.items.length + ' 条记录', 'success');
+    } else if(localTime > cloudTime) {
+      cloudUpload();
     }
   } catch(e) {
   }
