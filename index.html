@@ -27,7 +27,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
 .main-view{padding:0 16px 80px}
 .main-header{display:flex;align-items:center;padding:16px 0;gap:12px}
-.main-header h1{font-size:20px;font-weight:700}
+.main-header h1{font-size:20px;font-weight:700;flex:1}
 .header-btn{width:36px;height:36px;border-radius:10px;background:var(--surface2);border:none;color:var(--text2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .header-btn:active{background:var(--accent);color:#fff}
 
@@ -88,10 +88,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .detail-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-top:12px}
 .detail-row{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border)}
 .detail-row:last-child{border-bottom:none}
-.detail-label{font-size:12px;color:var(--text2);width:60px;flex-shrink:0}
-.detail-value{flex:1;font-size:14px;word-break:break-all}
-.detail-copy{width:32px;height:32px;border-radius:8px;background:var(--surface2);border:none;color:var(--text2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:8px}
+.detail-label{font-size:12px;color:var(--text2);width:50px;flex-shrink:0}
+.detail-value{flex:1;font-size:14px;word-break:break-all;user-select:all}
+.detail-copy{width:36px;height:36px;border-radius:8px;background:var(--surface2);border:none;color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:8px;transition:all .15s}
 .detail-copy:active{background:var(--accent);color:#fff}
+.detail-copy.copied{background:var(--success);color:#fff}
 
 .group-view{padding:0 16px}
 .group-header{display:flex;align-items:center;padding:16px 0;gap:12px}
@@ -104,8 +105,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .group-count{font-size:12px;color:var(--text2);padding:4px 10px;border-radius:12px;background:var(--surface2)}
 .group-edit{width:32px;height:32px;border-radius:8px;background:var(--surface2);border:none;color:var(--text2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 
-.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-60px);padding:10px 24px;border-radius:var(--radius);background:var(--surface2);color:var(--text);font-size:13px;z-index:999;opacity:0;transition:all .3s;border:1px solid var(--border)}
+.sync-view{padding:0 16px}
+.sync-header{display:flex;align-items:center;padding:16px 0;gap:12px}
+.sync-header .back{width:36px;height:36px;border-radius:10px;background:var(--surface2);border:none;color:var(--text2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.sync-header h2{font-size:18px;font-weight:700;flex:1}
+
+.sync-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.sync-section h3{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--accent2)}
+.sync-status{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;background:var(--surface2);font-size:13px;margin-bottom:12px}
+.sync-status.ok{color:var(--success)}
+.sync-status.err{color:var(--danger)}
+.sync-status.idle{color:var(--text2)}
+
+.sync-btns{display:flex;gap:12px;margin-top:12px}
+.sync-btn{padding:12px 0;border-radius:var(--radius);border:none;font-size:14px;font-weight:600;cursor:pointer;flex:1;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s}
+.sync-btn:active{transform:scale(.95)}
+.sync-btn.upload{background:var(--accent);color:#fff}
+.sync-btn.download{background:var(--success);color:#fff}
+
+.form-hint{font-size:12px;color:var(--text2);margin-top:6px;line-height:1.4}
+
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-60px);padding:10px 24px;border-radius:var(--radius);background:var(--surface2);color:var(--text);font-size:13px;z-index:999;opacity:0;transition:all .3s;border:1px solid var(--border);pointer-events:none}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.success{border-color:var(--success);background:rgba(46,204,113,.15);color:var(--success)}
 
 .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.show{display:flex}
@@ -118,6 +140,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .modal-confirm{background:var(--danger);color:#fff}
 
 .lock-btn{position:fixed;top:16px;right:16px;width:36px;height:36px;border-radius:10px;background:var(--surface2);border:none;color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5}
+.sync-indicator{position:fixed;top:16px;right:60px;width:36px;height:36px;border-radius:10px;background:var(--surface2);border:none;color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5}
+.sync-indicator.synced{color:var(--success)}
 </style>
 </head>
 <body>
@@ -161,6 +185,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <div class="view main-view" id="mainView">
   <div class="main-header">
     <h1>PW Vault</h1>
+    <button class="sync-indicator" id="syncInd" onclick="showView('syncView')" title="云同步">☁️</button>
     <button class="header-btn" onclick="showView('groupView')" title="分组管理">📁</button>
     <button class="lock-btn" onclick="lockApp()" title="锁定">🔒</button>
   </div>
@@ -189,7 +214,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   </div>
   <div class="form-group">
     <label>账户 *</label>
-    <input type="text" id="fAccount" placeholder="邮箱/手机/用户名">
+    <div class="pw-row">
+      <input type="text" id="fAccount" placeholder="邮箱/手机/用户名">
+      <button class="pw-copy" onclick="copyField('fAccount')">📋</button>
+    </div>
   </div>
   <div class="form-group">
     <label>密码 *</label>
@@ -226,14 +254,42 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   <div id="groupList"></div>
 </div>
 
+<div class="view sync-view" id="syncView">
+  <div class="sync-header">
+    <button class="back" onclick="showView('mainView')">←</button>
+    <h2>云同步</h2>
+  </div>
+  <div class="sync-section">
+    <h3>GitHub Token 设置</h3>
+    <div class="form-group">
+      <label>Personal Access Token</label>
+      <input type="password" id="syncToken" placeholder="ghp_xxxx...">
+      <div class="form-hint">需要 gist 读写权限。Token 只保存在你浏览器本地，不会外泄。</div>
+    </div>
+    <button class="sync-btn upload" style="width:100%;flex:none" onclick="saveSyncConfig()">保存配置</button>
+  </div>
+  <div class="sync-section">
+    <h3>数据同步</h3>
+    <div class="sync-status idle" id="syncStatus">未配置同步</div>
+    <div class="sync-btns">
+      <button class="sync-btn upload" onclick="syncUpload()">⬆ 上传</button>
+      <button class="sync-btn download" onclick="syncDownload()">⬇ 下载</button>
+    </div>
+    <div class="form-hint" style="margin-top:12px">上传：将本地数据加密后保存到 GitHub Gist<br>下载：从 Gist 拉取加密数据并解密到本地<br>数据使用 AES 加密，密钥为你的4位主密码</div>
+  </div>
+</div>
+
 <script>
 const MASTER_PIN = '4143';
+const GIST_DESC = 'PW Vault Sync Data';
+const GIST_FILENAME = 'pwvault_encrypted.json';
 let pin = '';
 let unlocked = false;
 let currentGroup = '';
 let editingId = null;
 let currentDetailId = null;
 let modalCallback = null;
+let currentDetailItem = null;
 
 function getData() {
   try { return JSON.parse(localStorage.getItem('pwvault_data') || '{"items":[],"groups":[]}'); }
@@ -241,10 +297,29 @@ function getData() {
 }
 function setData(d) { localStorage.setItem('pwvault_data', JSON.stringify(d)); }
 
-function showToast(msg) {
+function getSyncConfig() {
+  return { token: localStorage.getItem('pwvault_sync_token') || '', gistId: localStorage.getItem('pwvault_sync_gist') || '' };
+}
+function setSyncConfig(token, gistId) {
+  localStorage.setItem('pwvault_sync_token', token);
+  localStorage.setItem('pwvault_sync_gist', gistId);
+}
+
+function aesEncrypt(text, key) {
+  const k = CryptoJS.SHA256(key).toString();
+  return CryptoJS.AES.encrypt(text, k).toString();
+}
+function aesDecrypt(ciphertext, key) {
+  const k = CryptoJS.SHA256(key).toString();
+  const bytes = CryptoJS.AES.decrypt(ciphertext, k);
+  return bytes.toString(CryptoJS.enc.Utf8);
+}
+
+function showToast(msg, type) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
+  t.textContent = msg;
+  t.className = 'toast show' + (type === 'success' ? ' success' : '');
+  setTimeout(() => { t.className = 'toast'; }, 2000);
 }
 function openModal(title, msg, cb) {
   document.getElementById('modalTitle').textContent = title;
@@ -258,9 +333,10 @@ function closeModal() { document.getElementById('modal').classList.remove('show'
 function showView(id) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  if(id === 'mainView') renderList();
+  if(id === 'mainView') { renderList(); updateSyncIndicator(); }
   if(id === 'groupView') renderGroups();
   if(id === 'formView') updateGroupSelect();
+  if(id === 'syncView') renderSyncView();
 }
 
 function pinInput(n) {
@@ -375,7 +451,7 @@ function saveItem() {
     d.items.push({id: Date.now().toString(36) + Math.random().toString(36).slice(2,6), name, url, account, password, group, created: Date.now()});
   }
   setData(d);
-  showToast(editingId ? '已更新' : '已添加');
+  showToast(editingId ? '已更新' : '已添加', 'success');
   editingId = null;
   showView('mainView');
 }
@@ -387,29 +463,55 @@ function togglePw() {
   else { f.type = 'password'; b.textContent = '👁'; }
 }
 
+function copyToClipboard(text, btnEl) {
+  if(navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('已复制到剪贴板', 'success');
+      if(btnEl) { btnEl.classList.add('copied'); setTimeout(() => btnEl.classList.remove('copied'), 1500); }
+    }).catch(() => fallbackCopy(text));
+  } else { fallbackCopy(text); }
+}
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.cssText = 'position:fixed;left:-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); showToast('已复制', 'success'); }
+  catch(e) { showToast('复制失败，请手动复制'); }
+  document.body.removeChild(ta);
+}
 function copyField(id) {
   const v = document.getElementById(id).value;
-  if(!v) return;
-  navigator.clipboard.writeText(v).then(() => showToast('已复制到剪贴板'));
+  if(!v) { showToast('内容为空'); return; }
+  copyToClipboard(v);
 }
 
 function viewItem(id) {
   currentDetailId = id;
   const item = getData().items.find(i => i.id === id);
   if(!item) return;
+  currentDetailItem = item;
   const rows = [
-    {label:'名称', value:item.name},
+    {label:'名称', value:item.name, copy:item.name},
     {label:'网址', value:item.url || '未填写', copy:item.url},
-    {label:'账户', value:item.account, copy:true},
-    {label:'密码', value:item.password, copy:true},
+    {label:'账户', value:item.account, copy:item.account},
+    {label:'密码', value:item.password, copy:item.password},
     {label:'分组', value:item.group || '未分组'},
   ];
-  document.getElementById('detailCard').innerHTML = rows.map(r =>
-    `<div class="detail-row"><span class="detail-label">${r.label}</span><span class="detail-value">${esc(r.value)}</span>${r.copy ? `<button class="detail-copy" onclick="copyText('${r.copy === true ? item[r.label === '账户' ? 'account' : 'url'] : r.copy}')">📋</button>` : ''}</div>`
+  document.getElementById('detailCard').innerHTML = rows.map((r, idx) =>
+    `<div class="detail-row"><span class="detail-label">${r.label}</span><span class="detail-value">${esc(r.value)}</span>${r.copy ? `<button class="detail-copy" id="dcopy${idx}" onclick="copyDetailRow(${idx})">📋</button>` : ''}</div>`
   ).join('');
   showView('detailView');
 }
-function copyText(t) { navigator.clipboard.writeText(t).then(() => showToast('已复制')); }
+function copyDetailRow(idx) {
+  const item = currentDetailItem;
+  if(!item) return;
+  const map = [item.name, item.url, item.account, item.password];
+  const val = map[idx];
+  if(!val) { showToast('内容为空'); return; }
+  const btn = document.getElementById('dcopy' + idx);
+  copyToClipboard(val, btn);
+}
 function editCurrentItem() { openForm(currentDetailId); }
 function deleteCurrentItem() {
   openModal('确认删除', '删除后无法恢复，确定要删除吗？', () => {
@@ -440,7 +542,7 @@ function addGroup() {
   d.groups.push(name.trim());
   setData(d);
   renderGroups();
-  showToast('分组已添加');
+  showToast('分组已添加', 'success');
 }
 function editGroup(old) {
   const newN = prompt('修改分组名称', old);
@@ -451,7 +553,7 @@ function editGroup(old) {
   d.items.forEach(i => { if(i.group === old) i.group = newN.trim(); });
   setData(d);
   renderGroups();
-  showToast('分组已更新');
+  showToast('分组已更新', 'success');
 }
 function deleteGroup(name) {
   openModal('删除分组', `删除分组「${name}」后，该分组下的密码将变为「未分组」`, () => {
@@ -464,7 +566,116 @@ function deleteGroup(name) {
   });
 }
 
+function renderSyncView() {
+  const cfg = getSyncConfig();
+  document.getElementById('syncToken').value = cfg.token || '';
+  const st = document.getElementById('syncStatus');
+  if(!cfg.token) {
+    st.className = 'sync-status idle'; st.textContent = '未配置 Token';
+  } else if(cfg.gistId) {
+    st.className = 'sync-status ok'; st.textContent = '已配置 · Gist ID: ' + cfg.gistId.substring(0,8) + '...';
+  } else {
+    st.className = 'sync-status idle'; st.textContent = 'Token 已配置 · 未创建 Gist';
+  }
+}
+function updateSyncIndicator() {
+  const cfg = getSyncConfig();
+  const ind = document.getElementById('syncInd');
+  if(cfg.token) ind.classList.add('synced');
+  else ind.classList.remove('synced');
+}
+
+function saveSyncConfig() {
+  const token = document.getElementById('syncToken').value.trim();
+  if(!token) { showToast('请输入 Token'); return; }
+  localStorage.setItem('pwvault_sync_token', token);
+  renderSyncView();
+  updateSyncIndicator();
+  showToast('配置已保存', 'success');
+}
+
+async function syncUpload() {
+  const cfg = getSyncConfig();
+  if(!cfg.token) { showToast('请先配置 Token'); showView('syncView'); return; }
+  const data = getData();
+  const plaintext = JSON.stringify(data);
+  const encrypted = aesEncrypt(plaintext, MASTER_PIN);
+
+  const body = {
+    description: GIST_DESC,
+    public: false,
+    files: {}
+  };
+  body.files[GIST_FILENAME] = { content: encrypted };
+
+  try {
+    let res;
+    if(cfg.gistId) {
+      res = await fetch('https://api.github.com/gists/' + cfg.gistId, {
+        method: 'PATCH',
+        headers: { 'Authorization': 'token ' + cfg.token, 'Accept': 'application/vnd.github.v3+json' },
+        body: JSON.stringify(body)
+      });
+    } else {
+      res = await fetch('https://api.github.com/gists', {
+        method: 'POST',
+        headers: { 'Authorization': 'token ' + cfg.token, 'Accept': 'application/vnd.github.v3+json' },
+        body: JSON.stringify(body)
+      });
+    }
+    if(!res.ok) {
+      const err = await res.json();
+      throw new Error(err.message || 'HTTP ' + res.status);
+    }
+    const gist = await res.json();
+    if(!cfg.gistId) {
+      setSyncConfig(cfg.token, gist.id);
+    }
+    renderSyncView();
+    updateSyncIndicator();
+    showToast('上传成功', 'success');
+  } catch(e) {
+    showToast('上传失败: ' + e.message);
+  }
+}
+
+async function syncDownload() {
+  const cfg = getSyncConfig();
+  if(!cfg.token) { showToast('请先配置 Token'); showView('syncView'); return; }
+  if(!cfg.gistId) { showToast('请先上传一次以创建 Gist'); return; }
+
+  try {
+    const res = await fetch('https://api.github.com/gists/' + cfg.gistId, {
+      headers: { 'Authorization': 'token ' + cfg.token, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const gist = await res.json();
+    const file = gist.files[GIST_FILENAME];
+    if(!file || !file.content) throw new Error('Gist 中没有数据');
+
+    const decrypted = aesDecrypt(file.content, MASTER_PIN);
+    if(!decrypted) throw new Error('解密失败，主密码不匹配');
+    const data = JSON.parse(decrypted);
+
+    const localData = getData();
+    if(data.items.length > localData.items.length) {
+      setData(data);
+      showToast('下载成功 · 已更新 ' + data.items.length + ' 条记录', 'success');
+    } else {
+      openModal('数据冲突', `云端有 ${data.items.length} 条，本地有 ${localData.items.length} 条。要用云端数据覆盖本地吗？`, () => {
+        setData(data);
+        showToast('已用云端数据覆盖本地', 'success');
+        showView('mainView');
+      });
+      return;
+    }
+  } catch(e) {
+    showToast('下载失败: ' + e.message);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => { showView('lockView'); });
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
 </body>
 </html>
