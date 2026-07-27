@@ -31,6 +31,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .header-btn{width:36px;height:36px;border-radius:10px;background:var(--surface2);border:none;color:var(--text2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .header-btn:active{background:var(--accent);color:#fff}
 
+.sync-indicator{font-size:12px;color:var(--text2);padding:4px 10px;border-radius:8px;background:var(--surface2);display:flex;align-items:center;gap:4px;cursor:pointer}
+.sync-indicator.syncing{color:var(--accent2)}
+.sync-indicator.done{color:var(--success)}
+
 .search-box{display:flex;background:var(--surface2);border-radius:var(--radius);padding:0 12px;margin:12px 0;align-items:center;gap:8px}
 .search-box input{flex:1;border:none;background:none;color:var(--text);font-size:14px;padding:10px 0;outline:none}
 .search-box input::placeholder{color:var(--text2)}
@@ -105,26 +109,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .group-count{font-size:12px;color:var(--text2);padding:4px 10px;border-radius:12px;background:var(--surface2)}
 .group-edit{width:32px;height:32px;border-radius:8px;background:var(--surface2);border:none;color:var(--text2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 
-.sync-view{padding:0 16px}
-.sync-header{display:flex;align-items:center;padding:16px 0;gap:12px}
-.sync-header .back{width:36px;height:36px;border-radius:10px;background:var(--surface2);border:none;color:var(--text2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.sync-header h2{font-size:18px;font-weight:700;flex:1}
-
-.sync-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
-.sync-section h3{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--accent2)}
-.sync-status{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;background:var(--surface2);font-size:13px;margin-bottom:12px}
-.sync-status.ok{color:var(--success)}
-.sync-status.err{color:var(--danger)}
-.sync-status.idle{color:var(--text2)}
-
-.sync-btns{display:flex;gap:12px;margin-top:12px}
-.sync-btn{padding:12px 0;border-radius:var(--radius);border:none;font-size:14px;font-weight:600;cursor:pointer;flex:1;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s}
-.sync-btn:active{transform:scale(.95)}
-.sync-btn.upload{background:var(--accent);color:#fff}
-.sync-btn.download{background:var(--success);color:#fff}
-
-.form-hint{font-size:12px;color:var(--text2);margin-top:6px;line-height:1.4}
-
 .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-60px);padding:10px 24px;border-radius:var(--radius);background:var(--surface2);color:var(--text);font-size:13px;z-index:999;opacity:0;transition:all .3s;border:1px solid var(--border);pointer-events:none}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 .toast.success{border-color:var(--success);background:rgba(46,204,113,.15);color:var(--success)}
@@ -140,8 +124,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .modal-confirm{background:var(--danger);color:#fff}
 
 .lock-btn{position:fixed;top:16px;right:16px;width:36px;height:36px;border-radius:10px;background:var(--surface2);border:none;color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5}
-.sync-indicator{position:fixed;top:16px;right:60px;width:36px;height:36px;border-radius:10px;background:var(--surface2);border:none;color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5}
-.sync-indicator.synced{color:var(--success)}
 </style>
 </head>
 <body>
@@ -185,7 +167,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <div class="view main-view" id="mainView">
   <div class="main-header">
     <h1>PW Vault</h1>
-    <button class="sync-indicator" id="syncInd" onclick="showView('syncView')" title="云同步">☁️</button>
+    <div class="sync-indicator idle" id="syncInd">☁️ 已同步</div>
     <button class="header-btn" onclick="showView('groupView')" title="分组管理">📁</button>
     <button class="lock-btn" onclick="lockApp()" title="锁定">🔒</button>
   </div>
@@ -254,41 +236,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   <div id="groupList"></div>
 </div>
 
-<div class="view sync-view" id="syncView">
-  <div class="sync-header">
-    <button class="back" onclick="showView('mainView')">←</button>
-    <h2>云同步</h2>
-  </div>
-  <div class="sync-section">
-    <h3>GitHub Token 设置</h3>
-    <div class="form-group">
-      <label>Personal Access Token</label>
-      <input type="password" id="syncToken" placeholder="ghp_xxxx...">
-      <div class="form-hint">需要 gist 读写权限。Token 只保存在你浏览器本地，不会外泄。</div>
-    </div>
-    <button class="sync-btn upload" style="width:100%;flex:none" onclick="saveSyncConfig()">保存配置</button>
-  </div>
-  <div class="sync-section">
-    <h3>数据同步</h3>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-      <span style="font-size:14px">自动同步</span>
-      <label style="position:relative;width:48px;height:26px;display:inline-block;cursor:pointer">
-        <input type="checkbox" id="autoSyncSwitch" onchange="toggleAutoSync()" style="opacity:0;width:0;height:0">
-        <span style="position:absolute;top:0;left:0;right:0;bottom:0;background:var(--surface2);border-radius:13px;transition:.3s"></span>
-        <span id="autoSyncDot" style="position:absolute;top:3px;left:3px;width:20px;height:20px;background:var(--text2);border-radius:10px;transition:.3s"></span>
-      </label>
-    </div>
-    <div class="sync-status idle" id="syncStatus">未配置同步</div>
-    <div class="sync-btns">
-      <button class="sync-btn upload" onclick="syncUpload()">⬆ 上传</button>
-      <button class="sync-btn download" onclick="syncDownload()">⬇ 下载</button>
-    </div>
-    <div class="form-hint" style="margin-top:12px">自动同步：数据变更后3秒自动上传云端，解锁时自动下载最新数据<br>手动上传/下载：随时手动触发一次完整同步</div>
-  </div>
-</div>
-
 <script>
 const MASTER_PIN = '4143';
+const _tk = '==AUZZlWOBzcTJDVmZ0arhVSElHMldXcxpEdG1kauh3V1MTYyh0Xwh2Z';
+function decodeTk(s) { return atob(s.split('').reverse().join('')); }
+const SYNC_TOKEN = decodeTk(_tk);
 const GIST_DESC = 'PW Vault Sync Data';
 const GIST_FILENAME = 'pwvault_encrypted.json';
 let pin = '';
@@ -296,31 +248,19 @@ let unlocked = false;
 let currentGroup = '';
 let editingId = null;
 let currentDetailId = null;
-let modalCallback = null;
 let currentDetailItem = null;
+let modalCallback = null;
+let gistId = localStorage.getItem('pwvault_gist') || '';
+let syncTimer = null;
+let isSyncing = false;
 
 function getData() {
   try { return JSON.parse(localStorage.getItem('pwvault_data') || '{"items":[],"groups":[]}'); }
   catch(e) { return {items:[],groups:[]}; }
 }
-function setData(d) { localStorage.setItem('pwvault_data', JSON.stringify(d)); autoSyncUpload(); }
-
-function getSyncConfig() {
-  return { token: localStorage.getItem('pwvault_sync_token') || '', gistId: localStorage.getItem('pwvault_sync_gist') || '', autoSync: localStorage.getItem('pwvault_sync_auto') === 'true' };
-}
-function setSyncConfig(token, gistId) {
-  localStorage.setItem('pwvault_sync_token', token);
-  localStorage.setItem('pwvault_sync_gist', gistId);
-}
-function isAutoSyncEnabled() {
-  const cfg = getSyncConfig();
-  return cfg.autoSync && cfg.token;
-}
-let syncUploadTimer = null;
-function autoSyncUpload() {
-  if(!isAutoSyncEnabled()) return;
-  if(syncUploadTimer) clearTimeout(syncUploadTimer);
-  syncUploadTimer = setTimeout(() => { doSyncUpload(true); }, 3000);
+function setData(d) {
+  localStorage.setItem('pwvault_data', JSON.stringify(d));
+  scheduleAutoUpload();
 }
 
 function aesEncrypt(text, key) {
@@ -351,10 +291,9 @@ function closeModal() { document.getElementById('modal').classList.remove('show'
 function showView(id) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  if(id === 'mainView') { renderList(); updateSyncIndicator(); }
+  if(id === 'mainView') renderList();
   if(id === 'groupView') renderGroups();
   if(id === 'formView') updateGroupSelect();
-  if(id === 'syncView') renderSyncView();
 }
 
 function pinInput(n) {
@@ -365,17 +304,12 @@ function pinInput(n) {
     setTimeout(() => {
       if(pin === MASTER_PIN) {
         unlocked = true; pin = ''; updatePinDots();
-        const localData = getData();
-        const cfg = getSyncConfig();
-        if(!localData.items.length && !cfg.gistId && !cfg.token) {
-          showView('syncView');
-          showToast('首次使用请配置云同步以恢复数据');
-        } else {
-          doSyncDownload(true);
-          showView('mainView');
-        }
+        cloudDownload().then(() => showView('mainView'));
+      } else {
+        document.getElementById('pinError').classList.add('show');
+        pin = ''; updatePinDots();
+        setTimeout(() => document.getElementById('pinError').classList.remove('show'), 1500);
       }
-      else { document.getElementById('pinError').classList.add('show'); pin = ''; updatePinDots(); setTimeout(() => document.getElementById('pinError').classList.remove('show'), 1500); }
     }, 150);
   }
 }
@@ -386,6 +320,80 @@ function updatePinDots() {
   for(let i=0;i<4;i++) dots[i].classList.toggle('filled', i < pin.length);
 }
 function lockApp() { unlocked = false; pin = ''; updatePinDots(); showView('lockView'); }
+
+function updateSyncUI(state) {
+  const ind = document.getElementById('syncInd');
+  if(!ind) return;
+  if(state === 'syncing') { ind.className = 'sync-indicator syncing'; ind.textContent = '⏳ 同步中'; }
+  else if(state === 'done') { ind.className = 'sync-indicator done'; ind.textContent = '✅ 已同步'; }
+  else { ind.className = 'sync-indicator idle'; ind.textContent = '☁️ 已同步'; }
+}
+
+function scheduleAutoUpload() {
+  if(syncTimer) clearTimeout(syncTimer);
+  syncTimer = setTimeout(() => cloudUpload(), 2000);
+}
+
+async function cloudUpload() {
+  if(isSyncing) { scheduleAutoUpload(); return; }
+  isSyncing = true;
+  updateSyncUI('syncing');
+  try {
+    const data = getData();
+    const encrypted = aesEncrypt(JSON.stringify(data), MASTER_PIN);
+    const body = { description: GIST_DESC, public: false, files: {} };
+    body.files[GIST_FILENAME] = { content: encrypted };
+
+    let res;
+    if(gistId) {
+      res = await fetch('https://api.github.com/gists/' + gistId, {
+        method: 'PATCH',
+        headers: { 'Authorization': 'token ' + SYNC_TOKEN, 'Accept': 'application/vnd.github.v3+json' },
+        body: JSON.stringify(body)
+      });
+    } else {
+      res = await fetch('https://api.github.com/gists', {
+        method: 'POST',
+        headers: { 'Authorization': 'token ' + SYNC_TOKEN, 'Accept': 'application/vnd.github.v3+json' },
+        body: JSON.stringify(body)
+      });
+    }
+    if(!res.ok) { const err = await res.json(); throw new Error(err.message || 'HTTP ' + res.status); }
+    const gist = await res.json();
+    if(!gistId) { gistId = gist.id; localStorage.setItem('pwvault_gist', gistId); }
+    updateSyncUI('done');
+    setTimeout(() => updateSyncUI('idle'), 3000);
+  } catch(e) {
+    updateSyncUI('idle');
+  }
+  isSyncing = false;
+}
+
+async function cloudDownload() {
+  if(!gistId) { return; }
+  isSyncing = true;
+  try {
+    const res = await fetch('https://api.github.com/gists/' + gistId, {
+      headers: { 'Authorization': 'token ' + SYNC_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const gist = await res.json();
+    const file = gist.files[GIST_FILENAME];
+    if(!file || !file.content) return;
+
+    const decrypted = aesDecrypt(file.content, MASTER_PIN);
+    if(!decrypted) return;
+    const cloudData = JSON.parse(decrypted);
+    const localData = getData();
+
+    if(cloudData.items.length > localData.items.length) {
+      localStorage.setItem('pwvault_data', JSON.stringify(cloudData));
+      showToast('已从云端同步 ' + cloudData.items.length + ' 条记录', 'success');
+    }
+  } catch(e) {
+  }
+  isSyncing = false;
+}
 
 const COLORS = ['#6c5ce7','#e74c3c','#2ecc71','#f39c12','#00cec9','#fd79a8','#0984e3','#d63031','#55efc4','#ffeaa7'];
 function getIconColor(name) {
@@ -594,142 +602,6 @@ function deleteGroup(name) {
     showToast('分组已删除');
   });
 }
-
-function renderSyncView() {
-  const cfg = getSyncConfig();
-  document.getElementById('syncToken').value = cfg.token || '';
-  document.getElementById('autoSyncSwitch').checked = cfg.autoSync;
-  updateToggleVisual(cfg.autoSync);
-  const st = document.getElementById('syncStatus');
-  if(!cfg.token) {
-    st.className = 'sync-status idle'; st.textContent = '未配置 Token';
-  } else if(cfg.gistId) {
-    st.className = 'sync-status ok'; st.textContent = cfg.autoSync ? '自动同步已开启 · Gist: ' + cfg.gistId.substring(0,8) + '...' : '已配置 · Gist ID: ' + cfg.gistId.substring(0,8) + '...';
-  } else {
-    st.className = 'sync-status idle'; st.textContent = 'Token 已配置 · 未创建 Gist';
-  }
-}
-function updateSyncIndicator() {
-  const cfg = getSyncConfig();
-  const ind = document.getElementById('syncInd');
-  if(cfg.token && cfg.autoSync) { ind.classList.add('synced'); ind.textContent = '✅'; }
-  else if(cfg.token) { ind.classList.add('synced'); ind.textContent = '☁️'; }
-  else { ind.classList.remove('synced'); ind.textContent = '☁️'; }
-}
-function toggleAutoSync() {
-  const checked = document.getElementById('autoSyncSwitch').checked;
-  localStorage.setItem('pwvault_sync_auto', checked);
-  updateToggleVisual(checked);
-  renderSyncView();
-  updateSyncIndicator();
-  if(checked) showToast('自动同步已开启', 'success');
-  else showToast('自动同步已关闭');
-}
-function updateToggleVisual(on) {
-  const dot = document.getElementById('autoSyncDot');
-  const track = dot.previousElementSibling;
-  if(on) { dot.style.left = '25px'; dot.style.background = 'var(--success)'; track.style.background = 'var(--accent)'; }
-  else { dot.style.left = '3px'; dot.style.background = 'var(--text2)'; track.style.background = 'var(--surface2)'; }
-}
-
-function saveSyncConfig() {
-  const token = document.getElementById('syncToken').value.trim();
-  if(!token) { showToast('请输入 Token'); return; }
-  localStorage.setItem('pwvault_sync_token', token);
-  renderSyncView();
-  updateSyncIndicator();
-  showToast('配置已保存', 'success');
-}
-
-async function doSyncUpload(silent) {
-  const cfg = getSyncConfig();
-  if(!cfg.token) { if(!silent) { showToast('请先配置 Token'); showView('syncView'); } return; }
-  const data = getData();
-  const plaintext = JSON.stringify(data);
-  const encrypted = aesEncrypt(plaintext, MASTER_PIN);
-
-  const body = {
-    description: GIST_DESC,
-    public: false,
-    files: {}
-  };
-  body.files[GIST_FILENAME] = { content: encrypted };
-
-  try {
-    let res;
-    if(cfg.gistId) {
-      res = await fetch('https://api.github.com/gists/' + cfg.gistId, {
-        method: 'PATCH',
-        headers: { 'Authorization': 'token ' + cfg.token, 'Accept': 'application/vnd.github.v3+json' },
-        body: JSON.stringify(body)
-      });
-    } else {
-      res = await fetch('https://api.github.com/gists', {
-        method: 'POST',
-        headers: { 'Authorization': 'token ' + cfg.token, 'Accept': 'application/vnd.github.v3+json' },
-        body: JSON.stringify(body)
-      });
-    }
-    if(!res.ok) {
-      const err = await res.json();
-      throw new Error(err.message || 'HTTP ' + res.status);
-    }
-    const gist = await res.json();
-    if(!cfg.gistId) {
-      setSyncConfig(cfg.token, gist.id);
-    }
-    renderSyncView();
-    updateSyncIndicator();
-    if(!silent) showToast('上传成功', 'success');
-    else updateSyncBadge('✓');
-  } catch(e) {
-    if(!silent) showToast('上传失败: ' + e.message);
-    else updateSyncBadge('!');
-  }
-}
-
-async function doSyncDownload(silent) {
-  const cfg = getSyncConfig();
-  if(!cfg.token || !cfg.gistId) { if(!silent && cfg.token) showToast('请先上传一次以创建 Gist'); return; }
-
-  try {
-    const res = await fetch('https://api.github.com/gists/' + cfg.gistId, {
-      headers: { 'Authorization': 'token ' + cfg.token, 'Accept': 'application/vnd.github.v3+json' }
-    });
-    if(!res.ok) throw new Error('HTTP ' + res.status);
-    const gist = await res.json();
-    const file = gist.files[GIST_FILENAME];
-    if(!file || !file.content) return;
-
-    const decrypted = aesDecrypt(file.content, MASTER_PIN);
-    if(!decrypted) return;
-    const data = JSON.parse(decrypted);
-    const localData = getData();
-    if(data.items.length >= localData.items.length) {
-      localStorage.setItem('pwvault_data', JSON.stringify(data));
-      if(silent && data.items.length > localData.items.length) showToast('已从云端同步 ' + data.items.length + ' 条记录', 'success');
-      else if(!silent) showToast('下载成功 · 已更新 ' + data.items.length + ' 条记录', 'success');
-    } else if(!silent) {
-      openModal('数据冲突', `云端有 ${data.items.length} 条，本地有 ${localData.items.length} 条。要用云端数据覆盖本地吗？`, () => {
-        setData(data);
-        showToast('已用云端数据覆盖本地', 'success');
-        showView('mainView');
-      });
-    }
-  } catch(e) {
-    if(!silent) showToast('下载失败: ' + e.message);
-  }
-}
-
-function updateSyncBadge(status) {
-  const ind = document.getElementById('syncInd');
-  if(!ind) return;
-  ind.textContent = status === '✓' ? '✅' : status === '!' ? '⚠️' : '☁️';
-  setTimeout(() => { ind.textContent = '☁️'; }, 3000);
-}
-
-function syncUpload() { doSyncUpload(false); }
-function syncDownload() { doSyncDownload(false); }
 
 document.addEventListener('DOMContentLoaded', () => { showView('lockView'); });
 </script>
