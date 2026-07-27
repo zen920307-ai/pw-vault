@@ -363,7 +363,18 @@ function pinInput(n) {
   updatePinDots();
   if(pin.length === 4) {
     setTimeout(() => {
-      if(pin === MASTER_PIN) { unlocked = true; pin = ''; updatePinDots(); doSyncDownload(true); showView('mainView'); }
+      if(pin === MASTER_PIN) {
+        unlocked = true; pin = ''; updatePinDots();
+        const localData = getData();
+        const cfg = getSyncConfig();
+        if(!localData.items.length && !cfg.gistId && !cfg.token) {
+          showView('syncView');
+          showToast('首次使用请配置云同步以恢复数据');
+        } else {
+          doSyncDownload(true);
+          showView('mainView');
+        }
+      }
       else { document.getElementById('pinError').classList.add('show'); pin = ''; updatePinDots(); setTimeout(() => document.getElementById('pinError').classList.remove('show'), 1500); }
     }, 150);
   }
