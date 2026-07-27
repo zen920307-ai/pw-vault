@@ -556,13 +556,14 @@ function copyDetailRow(idx) {
 }
 function editCurrentItem() { openForm(currentDetailId); }
 function deleteCurrentItem() {
-  openModal('确认删除', '删除后无法恢复，确定要删除吗？', () => {
-    const d = getData();
-    d.items = d.items.filter(i => i.id !== currentDetailId);
-    setData(d);
-    showToast('已删除');
-    showView('mainView');
-  });
+  const d = getData();
+  const item = d.items.find(i => i.id === currentDetailId);
+  if(!item) return;
+  const name = item.name;
+  d.items = d.items.filter(i => i.id !== currentDetailId);
+  setData(d);
+  showToast('已删除「' + name + '」', 'success');
+  showView('mainView');
 }
 
 function renderGroups() {
@@ -598,14 +599,12 @@ function editGroup(old) {
   showToast('分组已更新', 'success');
 }
 function deleteGroup(name) {
-  openModal('删除分组', `删除分组「${name}」后，该分组下的密码将变为「未分组」`, () => {
-    const d = getData();
-    d.groups = d.groups.filter(g => g !== name);
-    d.items.forEach(i => { if(i.group === name) i.group = ''; });
-    setData(d);
-    renderGroups();
-    showToast('分组已删除');
-  });
+  const d = getData();
+  d.groups = d.groups.filter(g => g !== name);
+  d.items.forEach(i => { if(i.group === name) i.group = ''; });
+  setData(d);
+  renderGroups();
+  showToast('已删除分组「' + name + '」', 'success');
 }
 
 document.addEventListener('DOMContentLoaded', () => { showView('lockView'); });
