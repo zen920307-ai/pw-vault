@@ -12,7 +12,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .view{display:none;min-height:100vh}.view.active{display:flex;flex-direction:column}
 
 .lock-screen{align-items:center;justify-content:center;gap:24px;padding:40px 20px}
-.lock-logo{width:80px;height:80px;border-radius:20px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:36px;color:#fff}
+.lock-logo{width:80px;height:80px;border-radius:20px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center}
 .lock-title{font-size:28px;font-weight:700;letter-spacing:2px;color:var(--text)}
 .lock-sub{font-size:14px;color:var(--text2);margin-top:-8px}
 .pin-row{display:flex;gap:16px;margin:32px 0 24px}
@@ -26,19 +26,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .pin-error.show{opacity:1}
 
 .main-view{padding:0 16px 80px}
-.main-header{display:flex;align-items:center;padding:16px 0;gap:12px}
+.main-header{display:flex;align-items:center;padding:16px 0;gap:8px}
 .main-header h1{font-size:20px;font-weight:700;flex:1}
-.header-btn{width:36px;height:36px;border-radius:10px;background:var(--surface2);border:none;color:var(--text2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.header-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.header-btn{width:36px;height:36px;border-radius:10px;background:var(--surface2);border:none;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
 .header-btn:active{background:var(--accent);color:#fff}
 
-.sync-indicator{font-size:12px;color:var(--text2);padding:4px 10px;border-radius:8px;background:var(--surface2);display:flex;align-items:center;gap:4px;cursor:pointer}
-.sync-indicator.syncing{color:var(--accent2)}
-.sync-indicator.done{color:var(--success)}
+.sync-indicator{font-size:12px;color:var(--text2);padding:6px 12px;border-radius:8px;background:var(--surface2);display:flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap}
 
-.search-box{display:flex;background:var(--surface2);border-radius:var(--radius);padding:0 12px;margin:12px 0;align-items:center;gap:8px}
-.search-box input{flex:1;border:none;background:none;color:var(--text);font-size:14px;padding:10px 0;outline:none}
+.search-box{display:flex;background:var(--surface2);border-radius:var(--radius);padding:0 16px;margin:16px 0;align-items:center;gap:12px}
+.search-box input{flex:1;border:none;background:none;color:var(--text);font-size:17px;padding:14px 0;outline:none}
 .search-box input::placeholder{color:var(--text2)}
-.search-icon{color:var(--text2);font-size:16px}
+.search-icon{color:var(--text2);display:flex;align-items:center}
 
 .group-tabs{display:flex;gap:8px;margin:8px 0 16px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .group-tabs::-webkit-scrollbar{display:none}
@@ -56,7 +55,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .item-arrow{color:var(--text2);font-size:14px}
 
 .empty-state{text-align:center;padding:60px 20px;color:var(--text2)}
-.empty-state .icon{font-size:48px;margin-bottom:16px}
+.empty-state .icon{margin-bottom:16px;display:flex;justify-content:center}
 .empty-state p{font-size:14px;line-height:1.6}
 
 .fab{position:fixed;bottom:24px;right:20px;width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 16px rgba(108,92,231,.4);transition:transform .2s;z-index:10}
@@ -76,25 +75,28 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
 .pw-row{display:flex;gap:8px}
 .pw-row input{flex:1}
-.pw-toggle{width:44px;height:44px;border-radius:var(--radius);background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.pw-toggle{width:44px;height:44px;border-radius:var(--radius);background:var(--surface2);border:1px solid var(--border);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
 .pw-toggle:active{background:var(--accent);color:#fff}
-.pw-copy{width:44px;height:44px;border-radius:var(--radius);background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.pw-copy{width:44px;height:44px;border-radius:var(--radius);background:var(--surface2);border:1px solid var(--border);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.pw-copy:active{background:var(--accent);color:#fff}
 
 .detail-view{padding:0 16px}
 .detail-header{display:flex;align-items:center;padding:16px 0;gap:12px}
 .detail-header .back{width:36px;height:36px;border-radius:10px;background:var(--surface2);border:none;color:var(--text2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .detail-header h2{font-size:18px;font-weight:700;flex:1}
 .detail-actions{display:flex;gap:8px}
-.detail-actions button{width:36px;height:36px;border-radius:10px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px}
+.detail-actions button{width:36px;height:36px;border-radius:10px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
 .btn-edit{background:var(--surface2);color:var(--accent2)}
+.btn-edit:active{background:var(--accent);color:#fff}
 .btn-delete{background:var(--surface2);color:var(--danger)}
+.btn-delete:active{background:var(--danger);color:#fff}
 
 .detail-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-top:12px}
 .detail-row{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border)}
 .detail-row:last-child{border-bottom:none}
 .detail-label{font-size:12px;color:var(--text2);width:50px;flex-shrink:0}
 .detail-value{flex:1;font-size:14px;word-break:break-all;user-select:all}
-.detail-copy{width:36px;height:36px;border-radius:8px;background:var(--surface2);border:none;color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:8px;transition:all .15s}
+.detail-copy{width:36px;height:36px;border-radius:8px;background:var(--surface2);border:none;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:8px;transition:all .15s}
 .detail-copy:active{background:var(--accent);color:#fff}
 .detail-copy.copied{background:var(--success);color:#fff}
 
@@ -107,7 +109,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .group-item{display:flex;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);gap:12px}
 .group-name{flex:1;font-size:15px}
 .group-count{font-size:12px;color:var(--text2);padding:4px 10px;border-radius:12px;background:var(--surface2)}
-.group-edit{width:32px;height:32px;border-radius:8px;background:var(--surface2);border:none;color:var(--text2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.group-edit{width:32px;height:32px;border-radius:8px;background:var(--surface2);border:none;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.group-edit:active{background:var(--accent);color:#fff}
 
 .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-60px);padding:10px 24px;border-radius:var(--radius);background:var(--surface2);color:var(--text);font-size:13px;z-index:999;opacity:0;transition:all .3s;border:1px solid var(--border);pointer-events:none}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
@@ -122,8 +125,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .modal-btns button{padding:10px 20px;border-radius:10px;border:none;font-size:14px;cursor:pointer;font-weight:600}
 .modal-cancel{background:var(--surface2);color:var(--text2)}
 .modal-confirm{background:var(--danger);color:#fff}
-
-.lock-btn{position:fixed;top:16px;right:16px;width:36px;height:36px;border-radius:10px;background:var(--surface2);border:none;color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5}
 </style>
 </head>
 <body>
@@ -141,7 +142,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 </div>
 
 <div class="view lock-screen active" id="lockView">
-  <div class="lock-logo">🔐</div>
+  <div class="lock-logo"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
   <div class="lock-title">PW Vault</div>
   <div class="lock-sub">输入4位数字密码解锁</div>
   <div class="pin-row" id="pinDots">
@@ -167,12 +168,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <div class="view main-view" id="mainView">
   <div class="main-header">
     <h1>PW Vault</h1>
-    <div class="sync-indicator idle" id="syncInd">☁️ 已同步</div>
-    <button class="header-btn" onclick="showView('groupView')" title="分组管理">📁</button>
-    <button class="lock-btn" onclick="lockApp()" title="锁定">🔒</button>
+    <div class="header-actions">
+      <div class="sync-indicator idle" id="syncInd" onclick="cloudDownload()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg> 已同步</div>
+      <button class="header-btn" onclick="showView('groupView')" title="分组管理"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></button>
+      <button class="header-btn" onclick="lockApp()" title="锁定"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></button>
+    </div>
   </div>
   <div class="search-box">
-    <span class="search-icon">🔍</span>
+    <span class="search-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
     <input type="text" id="searchInput" placeholder="搜索名称或账户..." oninput="renderList()">
   </div>
   <div class="group-tabs" id="groupTabs"></div>
@@ -198,15 +201,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <label>账户 *</label>
     <div class="pw-row">
       <input type="text" id="fAccount" placeholder="邮箱/手机/用户名">
-      <button class="pw-copy" onclick="copyField('fAccount')">📋</button>
+      <button class="pw-copy" onclick="copyField('fAccount')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
     </div>
   </div>
   <div class="form-group">
     <label>密码 *</label>
     <div class="pw-row">
       <input type="password" id="fPassword" placeholder="密码">
-      <button class="pw-toggle" onclick="togglePw()" id="pwEye">👁</button>
-      <button class="pw-copy" onclick="copyField('fPassword')">📋</button>
+      <button class="pw-toggle" onclick="togglePw()" id="pwEye"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      <button class="pw-copy" onclick="copyField('fPassword')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
     </div>
   </div>
   <div class="form-group">
@@ -220,8 +223,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <button class="back" onclick="showView('mainView')">←</button>
     <h2>密码详情</h2>
     <div class="detail-actions">
-      <button class="btn-edit" onclick="editCurrentItem()">✏️</button>
-      <button class="btn-delete" onclick="deleteCurrentItem()">🗑</button>
+      <button class="btn-edit" onclick="editCurrentItem()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 16.5 3 18l1.5-4.5L17 3z"/></svg></button>
+      <button class="btn-delete" onclick="deleteCurrentItem()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
     </div>
   </div>
   <div class="detail-card" id="detailCard"></div>
@@ -254,6 +257,15 @@ const GIST_ID = 'aafd7cde4244c9572b200701d971a155';
 let gistId = GIST_ID;
 let syncTimer = null;
 let isSyncing = false;
+
+const SVG_COPY = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+const SVG_EYE_OPEN = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+const SVG_EYE_CLOSED = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.26A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-5.06 5.94"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+const SVG_LOCK = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+const SVG_FOLDER = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>';
+const SVG_CLOUD = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>';
+const SVG_LOADING = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>';
+const SVG_CHECK = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
 
 function getData() {
   try { return JSON.parse(localStorage.getItem('pwvault_data') || '{"items":[],"groups":[]}'); }
@@ -326,9 +338,9 @@ function lockApp() { unlocked = false; pin = ''; updatePinDots(); showView('lock
 function updateSyncUI(state) {
   const ind = document.getElementById('syncInd');
   if(!ind) return;
-  if(state === 'syncing') { ind.className = 'sync-indicator syncing'; ind.textContent = '⏳ 同步中'; }
-  else if(state === 'done') { ind.className = 'sync-indicator done'; ind.textContent = '✅ 已同步'; }
-  else { ind.className = 'sync-indicator idle'; ind.textContent = '☁️ 已同步'; }
+  if(state === 'syncing') { ind.className = 'sync-indicator syncing'; ind.innerHTML = SVG_LOADING + ' 同步中'; }
+  else if(state === 'done') { ind.className = 'sync-indicator done'; ind.innerHTML = SVG_CHECK + ' 已同步'; }
+  else { ind.className = 'sync-indicator idle'; ind.innerHTML = SVG_CLOUD + ' 已同步'; }
 }
 
 function scheduleAutoUpload() {
@@ -421,7 +433,7 @@ function renderList() {
   document.getElementById('groupTabs').innerHTML = tabsHtml;
 
   if(!items.length) {
-    document.getElementById('itemList').innerHTML = `<div class="empty-state"><div class="icon">🔒</div><p>${q ? '没有找到匹配的密码' : '还没有保存任何密码<br>点击右下角 ＋ 开始添加'}</p></div>`;
+    document.getElementById('itemList').innerHTML = `<div class="empty-state"><div class="icon">${SVG_LOCK}</div><p>${q ? '没有找到匹配的密码' : '还没有保存任何密码<br>点击右下角 ＋ 开始添加'}</p></div>`;
     return;
   }
 
@@ -464,7 +476,7 @@ function openForm(id) {
     document.getElementById('fPassword').value = '';
     document.getElementById('fGroup').value = currentGroup || '';
   }
-  document.getElementById('pwEye').textContent = '👁';
+  document.getElementById('pwEye').innerHTML = SVG_EYE_OPEN;
   document.getElementById('fPassword').type = 'password';
   showView('formView');
 }
@@ -501,8 +513,8 @@ function saveItem() {
 function togglePw() {
   const f = document.getElementById('fPassword');
   const b = document.getElementById('pwEye');
-  if(f.type === 'password') { f.type = 'text'; b.textContent = '🙈'; }
-  else { f.type = 'password'; b.textContent = '👁'; }
+  if(f.type === 'password') { f.type = 'text'; b.innerHTML = SVG_EYE_CLOSED; }
+  else { f.type = 'password'; b.innerHTML = SVG_EYE_OPEN; }
 }
 
 function copyToClipboard(text, btnEl) {
@@ -541,7 +553,7 @@ function viewItem(id) {
     {label:'分组', value:item.group || '未分组'},
   ];
   document.getElementById('detailCard').innerHTML = rows.map((r, idx) =>
-    `<div class="detail-row"><span class="detail-label">${r.label}</span><span class="detail-value">${esc(r.value)}</span>${r.copy ? `<button class="detail-copy" id="dcopy${idx}" onclick="copyDetailRow(${idx})">📋</button>` : ''}</div>`
+    `<div class="detail-row"><span class="detail-label">${r.label}</span><span class="detail-value">${esc(r.value)}</span>${r.copy ? `<button class="detail-copy" id="dcopy${idx}" onclick="copyDetailRow(${idx})">${SVG_COPY}</button>` : ''}</div>`
   ).join('');
   showView('detailView');
 }
@@ -569,12 +581,12 @@ function deleteCurrentItem() {
 function renderGroups() {
   const d = getData();
   if(!d.groups.length) {
-    document.getElementById('groupList').innerHTML = '<div class="empty-state"><div class="icon">📁</div><p>还没有分组<br>点击上方按钮创建</p></div>';
+    document.getElementById('groupList').innerHTML = `<div class="empty-state"><div class="icon">${SVG_FOLDER}</div><p>还没有分组<br>点击上方按钮创建</p></div>`;
     return;
   }
   document.getElementById('groupList').innerHTML = d.groups.map(g => {
     const cnt = d.items.filter(i => i.group === g).length;
-    return `<div class="group-item"><span class="group-name">${esc(g)}</span><span class="group-count">${cnt} 条</span><button class="group-edit" onclick="editGroup('${esc(g)}')">✏️</button><button class="group-edit" onclick="deleteGroup('${esc(g)}')" style="color:var(--danger)">🗑</button></div>`;
+    return `<div class="group-item"><span class="group-name">${esc(g)}</span><span class="group-count">${cnt} 条</span><button class="group-edit" onclick="editGroup('${esc(g)}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 16.5 3 18l1.5-4.5L17 3z"/></svg></button><button class="group-edit" onclick="deleteGroup('${esc(g)}')" style="color:var(--danger)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div>`;
   }).join('');
 }
 function addGroup() {
